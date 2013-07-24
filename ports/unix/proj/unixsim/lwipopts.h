@@ -32,9 +32,6 @@
 #ifndef __LWIPOPTS_H__
 #define __LWIPOPTS_H__
 
-/* <sys/time.h> is included in cc.h! */
-#define LWIP_TIMEVAL_PRIVATE 0
-
 #define LWIP_DBG_MIN_LEVEL 0
 #define LWIP_COMPAT_SOCKETS 1
 #define TAPIF_DEBUG LWIP_DBG_ON
@@ -126,7 +123,7 @@ a lot of data that needs to be copied, this should be set high. */
 
 /* ---------- Pbuf options ---------- */
 /* PBUF_POOL_SIZE: the number of buffers in the pbuf pool. */
-#define PBUF_POOL_SIZE          100
+#define PBUF_POOL_SIZE          120
 
 /* PBUF_POOL_BUFSIZE: the size of each pbuf in the pbuf pool. */
 #define PBUF_POOL_BUFSIZE       128
