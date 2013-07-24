@@ -34,7 +34,9 @@
 CONTRIBDIR=../..
 LWIPARCH=$(CONTRIBDIR)/ports/cross/src
 
-TOP_LEVEL_PROGRAM=../../../quickstart
+#### TBDRFH: Come up with a better way to define this so that this makefile will work with whatever port is used
+#### TOP_LEVEL_PROGRAM=../../../quickstart
+TOP_LEVEL_PROGRAM=../../../quickstart.stm32f4xx
 
 CROSS_COMPILE = arm-none-eabi-
 
