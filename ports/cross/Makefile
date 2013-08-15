@@ -34,9 +34,7 @@
 CONTRIBDIR=../..
 LWIPARCH=$(CONTRIBDIR)/ports/cross/src
 
-#### TBDRFH: Come up with a better way to define this so that this makefile will work with whatever port is used
-#### TOP_LEVEL_PROGRAM=../../../quickstart
-TOP_LEVEL_PROGRAM=../../../quickstart.stm32f4xx
+TOP_LEVEL_PROGRAM=../../../lwipdemo/Project/FreeRTOS/httpserver_socket
 
 CROSS_COMPILE = arm-none-eabi-
 
@@ -45,7 +43,7 @@ CROSS_COMPILE = arm-none-eabi-
 LWIPDIR=$(CONTRIBDIR)/../lwip/src
 
 #Set this to where you have the arch dir for your system for arch/sys_arch.h and arch/cc.h
-FREERTOS=../../../FreeRTOS
+FREERTOS=../../../chaney.aculink.bridge.freertos/FreeRTOS
 RTOS_SOURCE_DIR=$(FREERTOS)/Source
 
 
@@ -88,9 +86,7 @@ CFLAGS +=	-g
 CFLAGS += -DIPv4 -DLWIP_DEBUG
 
 CFLAGS	+=\
-	-I$(TOP_LEVEL_PROGRAM)/src/app-opts \
-	-I$(TOP_LEVEL_PROGRAM)/src/quick-opts \
-	-I$(TOP_LEVEL_PROGRAM)/src/quick \
+	-I$(TOP_LEVEL_PROGRAM)/inc \
 	-I$(LWIPDIR)/include \
 	-I$(LWIPARCH)/include \
 	-I$(LWIPDIR)/include/ipv4 \
