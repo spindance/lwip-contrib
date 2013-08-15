@@ -52,7 +52,7 @@ err_t sys_mbox_new(sys_mbox_t *mbox, int size)
 //TBD do we need to  use size?
 	( void ) size;
 	
-	mbox = xQueueCreate( archMESG_QUEUE_LENGTH, sizeof( void * ) );
+	*mbox = xQueueCreate( archMESG_QUEUE_LENGTH, sizeof( void * ) );
 
 #if SYS_STATS
       ++lwip_stats.sys.mbox.used;
