@@ -29,16 +29,8 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-#ifndef __ARCH_INIT_H__
-#define __ARCH_INIT_H__
 
-#define TCPIP_INIT_DONE(arg)  tcpip_init_done(arg)
-
-void tcpip_init_done(void *);
-int wait_for_tcpip_init(void);
-
-#endif /* __ARCH_INIT_H__ */
-
-
-
+#if defined(__IAR_SYSTEMS_ICC__)
+#pragma pack()
+#endif
 

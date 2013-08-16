@@ -32,82 +32,62 @@
 #ifndef __CC_H__
 #define __CC_H__
 
-typedef unsigned    char    u8_t;
-typedef signed      char    s8_t;
-typedef unsigned    short   u16_t;
-typedef signed      short   s16_t;
-typedef unsigned    long    u32_t;
-typedef signed      long    s32_t;
-typedef u32_t               mem_ptr_t;
+#include "cpu.h"
 
-#ifndef BYTE_ORDER
-#define BYTE_ORDER LITTLE_ENDIAN
+typedef unsigned   char    u8_t;
+typedef signed     char    s8_t;
+typedef unsigned   short   u16_t;
+typedef signed     short   s16_t;
+typedef unsigned   long    u32_t;
+typedef signed     long    s32_t;
+typedef u32_t mem_ptr_t;
+typedef int sys_prot_t;
+
+
+#define U16_F "hu"
+#define S16_F "d"
+#define X16_F "hx"
+#define U32_F "u"
+#define S32_F "d"
+#define X32_F "x"
+#define SZT_F "uz" 
+
+
+
+
+
+/* define compiler specific symbols */
+#if defined (__ICCARM__)
+
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT 
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+#define PACK_STRUCT_USE_INCLUDES
+
+#elif defined (__CC_ARM)
+
+#define PACK_STRUCT_BEGIN __packed
+#define PACK_STRUCT_STRUCT 
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+
+#elif defined (__GNUC__)
+
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+
+#elif defined (__TASKING__)
+
+#define PACK_STRUCT_BEGIN
+#define PACK_STRUCT_STRUCT
+#define PACK_STRUCT_END
+#define PACK_STRUCT_FIELD(x) x
+
 #endif
 
-#if defined(__arm__) && defined(__ARMCC_VERSION)
-    //
-    // Setup PACKing macros for KEIL/RVMDK Tools
-    //
-    #define PACK_STRUCT_BEGIN __packed
-    #define PACK_STRUCT_STRUCT 
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
-#elif defined (__IAR_SYSTEMS_ICC__)
-    //
-    // Setup PACKing macros for IAR Tools
-    //
-    #define PACK_STRUCT_BEGIN
-    #define PACK_STRUCT_STRUCT
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
-    #define PACK_STRUCT_USE_INCLUDES
-#else
-    //
-    // Setup PACKing macros for GCC Tools
-    //
-    #define PACK_STRUCT_BEGIN
-    #define PACK_STRUCT_STRUCT __attribute__ ((__packed__))
-    #define PACK_STRUCT_END
-    #define PACK_STRUCT_FIELD(x) x
-#endif
-
-//*****************************************************************************
-//
-// Define LWIP_PLATFORM_DIAG and LWIP_PLATFORM_ASSERT macros.  Both of these
-// are expected to display the message argument using a platform/app specific
-// display routine.  The ASSERT macro should then abort execution.
-//
-// In general, the user should define these in the target/application specific
-// LWIPOPTS.H file, using whatever display mechanisms are availble for the
-// board/application.  However, some general default macros are provided here
-// to allow the LWIP code to build properly with/without the DEBUG macro
-// defined.
-//
-//*****************************************************************************
-//
-// Define an empty DIAG display maro here ... since we have no knowledge of
-// what display routines are available.
-//
-//#ifndef LWIP_PLATFORM_DIAG
-//#define LWIP_PLATFORM_DIAG(msg)
-//#endif
-
-//
-// Define a generic ASSERT display macro here ... use the DIAG macro to display
-// the message, then use the __error__ function, which should always be
-// defined by the user application for DEBUG builds, to abandon execution.
-//
-#ifndef LWIP_PLATFORM_ASSERT
-#ifdef DEBUG
-extern void __error__(char *pcFilename, unsigned long ulLine);
-#define LWIP_PLATFORM_ASSERT(msg)       \
-{                                       \
-    LWIP_PLATFORM_DIAG(msg);            \
-    __error__(__FILE__, __LINE__);      \
-}
-#else
-#define LWIP_PLATFORM_ASSERT(msg)
-#endif
-#endif
+#define LWIP_PLATFORM_ASSERT(x) //do { if(!(x)) while(1); } while(0)
 
 #endif /* __CC_H__ */

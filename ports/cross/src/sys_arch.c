@@ -31,15 +31,19 @@
  */
 
 /* lwIP includes. */
-#include "lwip/opt.h"
+#include "lwip/debug.h"
 #include "lwip/def.h"
 #include "lwip/sys.h"
 #include "lwip/mem.h"
 #include "lwip/stats.h"
-#include "lwip/debug.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
+
+xTaskHandle xTaskGetCurrentTaskHandle( void ) PRIVILEGED_FUNCTION;
 
 /* This is the number of threads that can be started with sys_thread_new() */
-#define SYS_THREAD_MAX 4
+#define SYS_THREAD_MAX 6
 
 static u16_t s_nextthread = 0;
 
@@ -48,9 +52,7 @@ static u16_t s_nextthread = 0;
 //  Creates an empty mailbox.
 err_t sys_mbox_new(sys_mbox_t *mbox, int size)
 {
-//TBD DeleteMe	xQueueHandle mbox;
-//TBD do we need to  use size?
-	( void ) size;
+	(void ) size;
 	
 	*mbox = xQueueCreate( archMESG_QUEUE_LENGTH, sizeof( void * ) );
 
@@ -60,8 +62,10 @@ err_t sys_mbox_new(sys_mbox_t *mbox, int size)
          lwip_stats.sys.mbox.max = lwip_stats.sys.mbox.used;
 	  }
 #endif /* SYS_STATS */
-
-	return ERR_OK;
+ if (*mbox == NULL)
+  return ERR_MEM;
+ 
+ return ERR_OK;
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -92,9 +96,9 @@ void sys_mbox_free(sys_mbox_t *mbox)
 
 /*-----------------------------------------------------------------------------------*/
 //   Posts the "msg" to the mailbox.
-void sys_mbox_post(sys_mbox_t *mbox, void *msg)
+void sys_mbox_post(sys_mbox_t *mbox, void *data)
 {
-	while ( xQueueSendToBack(*mbox, &msg, portMAX_DELAY ) != pdTRUE ){}
+	while ( xQueueSendToBack(*mbox, &data, portMAX_DELAY ) != pdTRUE ){}
 }
 
 
@@ -198,23 +202,32 @@ void *dummyptr;
       return SYS_MBOX_EMPTY;
    }
 }
+/*----------------------------------------------------------------------------------*/
+int sys_mbox_valid(sys_mbox_t *mbox)          
+{      
+  if (*mbox == SYS_MBOX_NULL) 
+    return 0;
+  else
+    return 1;
+}                                             
+/*-----------------------------------------------------------------------------------*/                                              
+void sys_mbox_set_invalid(sys_mbox_t *mbox)   
+{                                             
+  *mbox = SYS_MBOX_NULL;                      
+}                                             
 
 /*-----------------------------------------------------------------------------------*/
-//  Creates and returns a new semaphore. The "count" argument specifies
+//  Creates a new semaphore. The "count" argument specifies
 //  the initial state of the semaphore.
 err_t sys_sem_new(sys_sem_t *sem, u8_t count)
 {
-
-	vSemaphoreCreateBinary( (*sem) );
-	
-	if( *sem == NULL )
+	vSemaphoreCreateBinary(*sem );
+	if(*sem == NULL)
 	{
-		
 #if SYS_STATS
       ++lwip_stats.sys.sem.err;
-#endif /* SYS_STATS */
-			
-		return ERR_MEM;	// TODO need assert
+#endif /* SYS_STATS */	
+		return ERR_MEM;
 	}
 	
 	if(count == 0)	// Means it can't be taken
@@ -270,7 +283,7 @@ portTickType StartTime, EndTime, Elapsed;
 	}
 	else // must block without a timeout
 	{
-		while( xSemaphoreTake( *sem, portMAX_DELAY ) != pdTRUE ){}
+		while( xSemaphoreTake(*sem, portMAX_DELAY) != pdTRUE){}
 		EndTime = xTaskGetTickCount();
 		Elapsed = (EndTime - StartTime) * portTICK_RATE_MS;
 
@@ -283,7 +296,7 @@ portTickType StartTime, EndTime, Elapsed;
 // Signals a semaphore
 void sys_sem_signal(sys_sem_t *sem)
 {
-	xSemaphoreGive( *sem );
+	xSemaphoreGive(*sem);
 }
 
 /*-----------------------------------------------------------------------------------*/
@@ -294,8 +307,22 @@ void sys_sem_free(sys_sem_t *sem)
       --lwip_stats.sys.sem.used;
 #endif /* SYS_STATS */
 			
-	vQueueDelete( (*sem) );
+	vQueueDelete(*sem);
 }
+/*-----------------------------------------------------------------------------------*/
+int sys_sem_valid(sys_sem_t *sem)                                               
+{
+  if (*sem == SYS_SEM_NULL)
+    return 0;
+  else
+    return 1;                                       
+}
+
+/*-----------------------------------------------------------------------------------*/                                                                                                                                                                
+void sys_sem_set_invalid(sys_sem_t *sem)                                        
+{                                                                               
+  *sem = SYS_SEM_NULL;                                                          
+} 
 
 /*-----------------------------------------------------------------------------------*/
 // Initialize sys arch
@@ -304,9 +331,55 @@ void sys_init(void)
 	// keep track of how many threads have been created
 	s_nextthread = 0;
 }
+/*-----------------------------------------------------------------------------------*/
+                                      /* Mutexes*/
+/*-----------------------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------------------*/
+#if LWIP_COMPAT_MUTEX == 0
+/* Create a new mutex*/
+err_t sys_mutex_new(sys_mutex_t *mutex) {
 
+  *mutex = xSemaphoreCreateMutex();
+		if(*mutex == NULL)
+	{
+#if SYS_STATS
+      ++lwip_stats.sys.mutex.err;
+#endif /* SYS_STATS */	
+		return ERR_MEM;
+	}
+
+#if SYS_STATS
+	++lwip_stats.sys.mutex.used;
+ 	if (lwip_stats.sys.mutex.max < lwip_stats.sys.mutex.used) {
+		lwip_stats.sys.mutex.max = lwip_stats.sys.mutex.used;
+	}
+#endif /* SYS_STATS */
+        return ERR_OK;
+}
+/*-----------------------------------------------------------------------------------*/
+/* Deallocate a mutex*/
+void sys_mutex_free(sys_mutex_t *mutex)
+{
+#if SYS_STATS
+      --lwip_stats.sys.mutex.used;
+#endif /* SYS_STATS */
+			
+	vQueueDelete(*mutex);
+}
+/*-----------------------------------------------------------------------------------*/
+/* Lock a mutex*/
+void sys_mutex_lock(sys_mutex_t *mutex)
+{
+	sys_arch_sem_wait(*mutex, 0);
+}
 
 /*-----------------------------------------------------------------------------------*/
+/* Unlock a mutex*/
+void sys_mutex_unlock(sys_mutex_t *mutex)
+{
+	xSemaphoreGive(*mutex);
+}
+#endif /*LWIP_COMPAT_MUTEX*/
 /*-----------------------------------------------------------------------------------*/
 // TODO
 /*-----------------------------------------------------------------------------------*/
@@ -316,7 +389,7 @@ void sys_init(void)
   thread() function. The id of the new thread is returned. Both the id and
   the priority are system dependent.
 */
-sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread, void *arg, int stacksize, int prio)
+sys_thread_t sys_thread_new(const char *name, lwip_thread_fn thread , void *arg, int stacksize, int prio)
 {
 xTaskHandle CreatedTask;
 int result;
@@ -325,9 +398,12 @@ int result;
    {
       result = xTaskCreate( thread, ( signed portCHAR * ) name, stacksize, arg, prio, &CreatedTask );
 
+	   // For each task created, store the task handle (pid) in the timers array.
+	   // This scheme doesn't allow for threads to be deleted
+	   //s_timeoutlist[s_nextthread++].pid = CreatedTask;
+
 	   if(result == pdPASS)
 	   {
-		   s_nextthread++;
 		   return CreatedTask;
 	   }
 	   else
@@ -353,7 +429,7 @@ int result;
 
   sys_arch_protect() is only required if your port is supporting an operating
   system.
-*/ 
+*/
 sys_prot_t sys_arch_protect(void)
 {
 	vPortEnterCritical();

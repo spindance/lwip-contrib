@@ -98,7 +98,7 @@ CFLAGS	+=\
 
 # COREFILES, CORE4FILES: The minimum set of files needed for lwIP.
 COREFILES=$(LWIPDIR)/core/mem.c $(LWIPDIR)/core/memp.c $(LWIPDIR)/core/netif.c \
-	$(LWIPDIR)/core/pbuf.c $(LWIPDIR)/core/stats.c $(LWIPDIR)/core/sys.c \
+	$(LWIPDIR)/core/autoip.c $(LWIPDIR)/core/stats.c $(LWIPDIR)/core/sys.c \
         $(LWIPDIR)/core/tcp.c $(LWIPDIR)/core/tcp_in.c $(LWIPDIR)/core/raw.c \
         $(LWIPDIR)/core/tcp_out.c $(LWIPDIR)/core/udp.c $(LWIPDIR)/core/init.c \
         $(LWIPDIR)/core/def.c $(LWIPDIR)/core/timers.c $(LWIPDIR)/core/dhcp.c
@@ -114,11 +114,15 @@ APIFILES=$(LWIPDIR)/api/api_lib.c $(LWIPDIR)/api/api_msg.c $(LWIPDIR)/api/tcpip.
 # NETIFFILES: Files implementing various generic network interface functions.'
 NETIFFILES=$(LWIPDIR)/netif/etharp.c
 
+#RFHTBD: Additional files needed by httpserver-sockets demo
+ADDITIONAL_FILES=$(LWIPDIR)/api/netifapi.c $(LWIPDIR)/core/dns.c $(LWIPDIR)/core/pbuf.c \
+                 $(LWIPDIR)/ipv4/igmp.c
+
 # ARCHFILES: Architecture specific files.
 ARCHFILES=$(wildcard $(LWIPARCH)/*.c $(LWIPARCH)/netif/tapif.c $(LWIPARCH)/netif/tunif.c $(LWIPARCH)/netif/unixif.c $(LWIPARCH)/netif/list.c $(LWIPARCH)/netif/tcpdump.c)
 
 # LWIPFILES: All the above.
-LWIPFILES=$(COREFILES) $(CORE4FILES) $(APIFILES) $(NETIFFILES) $(ARCHFILES)
+LWIPFILES=$(COREFILES) $(CORE4FILES) $(APIFILES) $(NETIFFILES) $(ARCHFILES) $(ADDITIONAL_FILES)
 LWIPFILESW=$(wildcard $(LWIPFILES))
 LWIPOBJS=$(addprefix $(BUILD_DIR), $(notdir $(LWIPFILESW:.c=.o)))
 
