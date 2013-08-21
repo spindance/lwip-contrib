@@ -34,17 +34,18 @@
 CONTRIBDIR=../..
 LWIPARCH=$(CONTRIBDIR)/ports/cross/src
 
-TOP_LEVEL_PROGRAM=../../../lwipdemo/Project/FreeRTOS/httpserver_socket
+TOP_LEVEL_PROGRAM=$(LWIP_TOP_LEVEL_PROGRAM)
 
+ifndef CROSS_COMPILE
 CROSS_COMPILE = arm-none-eabi-
+endif
 
 #Set this to where you have the lwip core module checked out from CVS
 #default assumes it's a dir named lwip at the same level as the contrib module
 LWIPDIR=$(CONTRIBDIR)/../lwip/src
 
 #Set this to where you have the arch dir for your system for arch/sys_arch.h and arch/cc.h
-FREERTOS=../../../chaney.aculink.bridge.freertos/FreeRTOS
-RTOS_SOURCE_DIR=$(FREERTOS)/Source
+RTOS_SOURCE_DIR=$(LWIP_RTOS_SOURCE_DIR)
 
 
 # Convention for where the build detritus ends up
