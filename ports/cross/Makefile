@@ -70,21 +70,25 @@ OBJDUMP	= $(CROSS_COMPILE)objdump
 #
 # The flags passed to the compiler.
 #
-CFLAGS =	-mthumb \
-		-mcpu=cortex-m3 \
-		-Os \
+CFLAGS =	$(TOOLCHAIN_MTHUMB) \
+		$(TOOLCHAIN_MCPU_EQ) \
+		$(TOOLCHAIN_MARCH_EQ) \
+		$(TOOLCHAIN_MFLOAT_ABI_EQ) \
+		$(TOOLCHAIN_MFPU_EQ) \
+		$(TOOLCHAIN_OPTIMISATION) \
 		-ffunction-sections \
 		-fdata-sections \
 		-std=c99 \
-		-Wall \
-		-pedantic \
-		-DPART_$(PART) \
-		-c
+		-c \
+		$(TOOLCHAIN_PEDANTIC) \
+		$(TOOLCHAIN_WARNINGS) \
+		$(TOOLCHAIN_VERBOSE) \
+		-DPART_$(PART)
 
 # Build for debug
-CFLAGS +=	-g
+CFLAGS +=	$(TOOLCHAIN_DEBUG_FLAGS)
 
-CFLAGS += -DIPv4 -DLWIP_DEBUG
+CFLAGS += -DIPv4
 
 CFLAGS	+=\
 	-I$(TOP_LEVEL_PROGRAM)/inc \
