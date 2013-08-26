@@ -66,40 +66,39 @@ STRIP	= $(CROSS_COMPILE)strip
 OBJCOPY	= $(CROSS_COMPILE)objcopy
 OBJDUMP	= $(CROSS_COMPILE)objdump
 
-
 #
 # The flags passed to the compiler.
 #
-CFLAGS =	$(TOOLCHAIN_MTHUMB) \
-		$(TOOLCHAIN_MCPU_EQ) \
-		$(TOOLCHAIN_MARCH_EQ) \
-		$(TOOLCHAIN_MFLOAT_ABI_EQ) \
-		$(TOOLCHAIN_MFPU_EQ) \
-		$(TOOLCHAIN_OPTIMISATION) \
-		-ffunction-sections \
-		-fdata-sections \
-		-std=c99 \
-		-c \
-		$(TOOLCHAIN_PEDANTIC) \
-		$(TOOLCHAIN_WARNINGS) \
-		$(TOOLCHAIN_VERBOSE) \
-		-DPART_$(PART)
+CFLAGS-$(CONFIG_TOOLCHAIN_USE_MTHUMB) = "-mthumb"
+CFLAGS-y                              += $(TOOLCHAIN_MCPU_EQ)
+CFLAGS-y                              += $(TOOLCHAIN_MARCH_EQ)
+CFLAGS-y                              += $(TOOLCHAIN_MFLOAT_ABI_EQ)
+CFLAGS-y                              += $(TOOLCHAIN_MFPU_EQ)
+CFLAGS-y                              += $(TOOLCHAIN_OPTIMISATION)
+CFLAGS-y                              += -ffunction-sections
+CFLAGS-y                              += -fdata-sections
+CFLAGS-y                              += -std=c99
+CFLAGS-y                              += -c
+CFLAGS-$(CONFIG_TOOLCHAIN_PEDANTIC)   += -pedantic
+CFLAGS-$(CONFIG_TOOLCHAIN_WALL)       += -Wall
+CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += --verbose
+CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
+CFLAGS-y                              += -DPART_$(PART)
 
-# Build for debug
-CFLAGS +=	$(TOOLCHAIN_DEBUG_FLAGS)
+CFLAGS-y                              += -DIPv4
 
-CFLAGS += -DIPv4
+CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/inc
+CFLAGS-y                              += -I$(LWIPDIR)/include
+CFLAGS-y                              += -I$(LWIPARCH)/include
+CFLAGS-y                              += -I$(LWIPDIR)/include/ipv4
+CFLAGS-y                              += -I./src/include
+CFLAGS-y                              += -I./src/include/LM3S
+CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/src
+CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/include
+CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 
 
-CFLAGS	+=\
-	-I$(TOP_LEVEL_PROGRAM)/inc \
-	-I$(LWIPDIR)/include \
-	-I$(LWIPARCH)/include \
-	-I$(LWIPDIR)/include/ipv4 \
-	-I./src/include \
-	-I./src/include/LM3S \
-	-I$(TOP_LEVEL_PROGRAM)/src \
-	-I$(RTOS_SOURCE_DIR)/include \
-	-I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 
+CFLAGS = $(CFLAGS-y)
+
 
 # COREFILES, CORE4FILES: The minimum set of files needed for lwIP.
 COREFILES=$(LWIPDIR)/core/mem.c $(LWIPDIR)/core/memp.c $(LWIPDIR)/core/netif.c \
