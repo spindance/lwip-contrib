@@ -95,7 +95,9 @@ CFLAGS-y                              += -I./src/include
 CFLAGS-y                              += -I./src/include/LM3S
 CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/src
 CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/include
-CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3 
+
+CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM3)  += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3
+CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM4F) += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM4F
 
 CFLAGS = $(CFLAGS-y)
 
