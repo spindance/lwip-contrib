@@ -87,7 +87,7 @@ CFLAGS-y                              += -DPART_$(PART)
 
 CFLAGS-y                              += -DIPv4
 
-CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/inc
+CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/include
 CFLAGS-y                              += -I$(LWIPDIR)/include
 CFLAGS-y                              += -I$(LWIPARCH)/include
 CFLAGS-y                              += -I$(LWIPDIR)/include/ipv4
