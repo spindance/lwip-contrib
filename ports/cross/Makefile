@@ -34,7 +34,7 @@
 CONTRIBDIR=../..
 LWIPARCH=$(CONTRIBDIR)/ports/cross/src
 
-TOP_LEVEL_PROGRAM=$(LWIP_TOP_LEVEL_PROGRAM)
+TOP_LEVEL_PROGRAM_INCLUDE=$(LWIP_TOP_LEVEL_PROGRAM_INCLUDE)
 
 ifndef CROSS_COMPILE
 CROSS_COMPILE = arm-none-eabi-
@@ -52,7 +52,7 @@ RTOS_SOURCE_DIR=$(LWIP_RTOS_SOURCE_DIR)
 BUILD_DIR = obj/
 
 # Quiet vs. verbose: to make things verbose, put a # in front of the @
-Q	= @
+Q	?= @
 
 # Make variables (CC, etc...)
 
@@ -80,20 +80,20 @@ CFLAGS-y                              += -fdata-sections
 CFLAGS-y                              += -std=c99
 CFLAGS-y                              += -c
 CFLAGS-$(CONFIG_TOOLCHAIN_PEDANTIC)   += -pedantic
-CFLAGS-$(CONFIG_TOOLCHAIN_WALL)       += -Wall
+######CFLAGS-$(CONFIG_TOOLCHAIN_WALL)       += -Wall
 CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += --verbose
 CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
 CFLAGS-y                              += -DPART_$(PART)
 
 CFLAGS-y                              += -DIPv4
 
-CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/include
+CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM_INCLUDE)
 CFLAGS-y                              += -I$(LWIPDIR)/include
 CFLAGS-y                              += -I$(LWIPARCH)/include
 CFLAGS-y                              += -I$(LWIPDIR)/include/ipv4
 CFLAGS-y                              += -I./src/include
 CFLAGS-y                              += -I./src/include/LM3S
-CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/src
+###TBD Do we need this? CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/src
 CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/include
 
 CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM3)  += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3
@@ -138,7 +138,7 @@ LWIPLIB=liblwip.a
 VPATH	= $(sort $(dir $(LWIPFILESW)))
 
 $(BUILD_DIR)%.o: %.c
-	@echo "  $(CC) $<"
+	@echo "+--$(CC) $<"
 	$(Q)$(CC) $(CFLAGS) -o $@ $<
 
 .PHONY: all clean depend
@@ -153,8 +153,9 @@ depend: $(BUILD_DIR)depend
 -include $(BUILD_DIR)depend
 
 $(LWIPLIB): $(LWIPOBJS)
-	$(AR) -rc $@ $^
+	@echo "+--$(AR) $@"
+	$(Q)$(AR) -rc $@ $^
 
 $(BUILD_DIR)depend: $(LWIPFILES)
-	@echo "  Building dependancies."
+	@echo "+--Building dependancies."
 	$(Q)$(CC) $(CFLAGS) -MM $(addprefix -MT, $(LWIPOBJS)) -E $^ > $@ || rm -f $(BUILD_DIR)depend
