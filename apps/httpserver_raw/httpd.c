@@ -828,6 +828,11 @@ get_tag_insert(struct http_state *hs)
            , hs->handle->state
 #endif /* LWIP_HTTPD_FILE_STATE */
            );
+//TBDRMS: trying this out:
+#if LWIP_HTTPD_SSI_MULTIPART
+        if (ssi->tag_insert_len==0)
+          ssi->tag_part = HTTPD_LAST_TAG_PART;
+#endif
         return;
       }
     }
