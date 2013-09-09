@@ -141,12 +141,14 @@ $(BUILD_DIR)%.o: %.c
 	@echo "+--$(CC) $<"
 	$(Q)$(CC) $(CFLAGS) -o $@ $<
 
-.PHONY: all clean depend
+.PHONY: all clean distclean depend
 
 all: $(LWIPLIB) 
 
 clean:
 	rm -f $(BUILD_DIR)*.o $(BUILD_DIR)*.d $(LWIPLIB) *.s  $(BUILD_DIR)depend
+
+distclean: clean
 
 depend: $(BUILD_DIR)depend
 
