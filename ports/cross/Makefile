@@ -204,6 +204,10 @@ LWIPLIB=liblwip.a
 
 VPATH	= $(sort $(dir $(LWIPFILESW)))
 
+
+SEP = '-----------------------------------------------------------------------+-'
+
+
 $(BUILD_DIR)%.o: %.c
 	@echo "+--$(CC) $<"
 	$(Q)$(CC) $(CFLAGS) -o $@ $<
@@ -211,15 +215,38 @@ $(BUILD_DIR)%.o: %.c
 .PHONY: all clean distclean depend
 
 all: $(LWIPLIB) 
+	@# This line prevents warning when nothing to be done for all.
 
 clean:
+	@echo $(SEP)
+	@echo "+--lwip-contrib/ports/cross library clean"
+	@echo $(SEP)
 	rm -f $(BUILD_DIR)*.o $(BUILD_DIR)*.d $(LWIPLIB) *.s  $(BUILD_DIR)depend
 
 distclean: clean
+	@echo $(SEP)
+	@echo "+--lwip-contrib/ports/cross library distclean"
+	@echo $(SEP)
 
 depend: $(BUILD_DIR)depend
 
--include $(BUILD_DIR)depend
+ifndef MAKECMDGOALS
+-include $(DEPS)
+else
+ifneq ($(MAKECMDGOALS),$(filter $(MAKECMDGOALS),"help clean "))
+#
+# Include the dependencies if they are available
+# and we are not invoked with one of the targets:
+#
+# clean help
+#
+# .e.g.
+#
+# make clean
+#
+-include $(DEPS)
+endif
+endif
 
 $(LWIPLIB): $(LWIPOBJS)
 	@echo "+--$(AR) $@"
