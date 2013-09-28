@@ -108,14 +108,9 @@ endif
 CONTRIBDIR=../..
 LWIPARCH=$(CONTRIBDIR)/ports/cross/src
 
-TOP_LEVEL_PROGRAM_INCLUDE=$(LWIP_TOP_LEVEL_PROGRAM_INCLUDE)
-
 #Set this to where you have the lwip core module checked out from CVS
 #default assumes it's a dir named lwip at the same level as the contrib module
 LWIPDIR=$(CONTRIBDIR)/../lwip/src
-
-#Set this to where you have the arch dir for your system for arch/sys_arch.h and arch/cc.h
-RTOS_SOURCE_DIR=$(LWIP_RTOS_SOURCE_DIR)
 
 
 # Convention for where the build detritus ends up
@@ -154,17 +149,18 @@ CFLAGS-y                              += -DPART_$(PART)
 
 CFLAGS-y                              += -DIPv4
 
-CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM_INCLUDE)
+CFLAGS-y                              += -I../../$(TOP_LEVEL_PROGRAM_INCLUDE)
+CFLAGS-y                              += -I../../$(TOP_LEVEL_PROGRAM_INCLUDE)/generated
 CFLAGS-y                              += -I$(LWIPDIR)/include
 CFLAGS-y                              += -I$(LWIPARCH)/include
 CFLAGS-y                              += -I$(LWIPDIR)/include/ipv4
 CFLAGS-y                              += -I./src/include
 CFLAGS-y                              += -I./src/include/LM3S
 ###TBD Do we need this? CFLAGS-y                              += -I$(TOP_LEVEL_PROGRAM)/src
-CFLAGS-y                              += -I$(RTOS_SOURCE_DIR)/include
+CFLAGS-y                              += -I../../$(RTOS_SOURCE_DIR)/include
 
-CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM3)  += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3
-CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM4F) += -I$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM4F
+CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM3)  += -I../../$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM3
+CFLAGS-$(CONFIG_FREERTOS_PORT_ARM_CM4F) += -I../../$(RTOS_SOURCE_DIR)/portable/GCC/ARM_CM4F
 
 CFLAGS = $(CFLAGS-y)
 
