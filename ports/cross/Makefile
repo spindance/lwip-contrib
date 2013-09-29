@@ -53,9 +53,9 @@ unquote = $(subst $\",,$1)
 
 ifeq ($(CONFIG_CONFIGURED),y)
     ifeq ($(CONFIG_QUIET_BUILD),y)
-        export Q ?= @
+        Q ?= @
     else
-        export Q ?= #@
+        Q ?= #@
     endif
 else
      #
@@ -73,7 +73,7 @@ else
      #        $ make help
      # we default to a quiet make.
      #
-     export Q ?= @
+     Q ?= @
 endif
 
 
@@ -146,11 +146,11 @@ CFLAGS-$(CONFIG_TOOLCHAIN_PEDANTIC)   += -pedantic
 CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += --verbose
 CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
 CFLAGS-y                              += -DPART_$(PART)
-
 CFLAGS-y                              += -DIPv4
-
-CFLAGS-y                              += -I../../$(TOP_LEVEL_PROGRAM_INCLUDE)
-CFLAGS-y                              += -I../../$(TOP_LEVEL_PROGRAM_INCLUDE)/generated
+CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include
+CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include/generated
+CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/include
+CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/include/generated
 CFLAGS-y                              += -I$(LWIPDIR)/include
 CFLAGS-y                              += -I$(LWIPARCH)/include
 CFLAGS-y                              += -I$(LWIPDIR)/include/ipv4
