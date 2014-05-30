@@ -36,15 +36,14 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-#include "rtosShim/rtsSemaphore.h"
 
 #define SYS_MBOX_NULL (xQueueHandle)0
-#define SYS_SEM_NULL  (rtsSemHandle)0
+#define SYS_SEM_NULL  (xSemaphoreHandle)0
 #define SYS_DEFAULT_THREAD_STACK_DEPTH	configMINIMAL_STACK_SIZE
 
-typedef rtsSemHandle    sys_sem_t;
-typedef xQueueHandle    sys_mbox_t;
-typedef xTaskHandle     sys_thread_t;
+typedef xSemaphoreHandle sys_sem_t;
+typedef xQueueHandle sys_mbox_t;
+typedef xTaskHandle sys_thread_t;
 
 typedef struct _sys_arch_state_t
 {
