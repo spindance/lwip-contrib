@@ -90,6 +90,10 @@ typedef int sys_prot_t;
 
 #endif
 
-#define LWIP_PLATFORM_ASSERT(x) logFatal(x)
+#if 1
+    #define LWIP_PLATFORM_ASSERT(x)
+#else
+    #define LWIP_PLATFORM_ASSERT(x) logFatal(x)
+#endif
 
 #endif /* __CC_H__ */
