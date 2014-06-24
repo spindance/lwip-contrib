@@ -147,6 +147,7 @@ CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += --verbose
 CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
 CFLAGS-y                              += -DPART_$(PART)
 CFLAGS-y                              += -DIPv4
+CFLAGS-$(CONFIG_NDEBUG_ENA)           += -D"NDEBUG"
 CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include
 CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include/generated
 CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/source
