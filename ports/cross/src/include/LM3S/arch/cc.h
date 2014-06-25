@@ -90,7 +90,7 @@ typedef int sys_prot_t;
 
 #endif
 
-#if 1
+#if 0
     #define LWIP_PLATFORM_ASSERT(x)
 #else
     #define LWIP_PLATFORM_ASSERT(x) logFatal(x)
