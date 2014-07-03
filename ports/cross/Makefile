@@ -157,6 +157,7 @@ CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/source
 CFLAGS-y                              += -I../../../lwip/src/include
 CFLAGS-y                              += -I./src/include
 CFLAGS-y                              += -I../../../lwip/src/include/ipv4
+CFLAGS-y                              += -I../../../lwip/src/include/ipv6
 CFLAGS-y                              += -I./src/include/LM3S
 
 CFLAGS-y                                += -I../../$(RTOS_SOURCE_DIR)/include
@@ -171,9 +172,10 @@ COREFILES=$(LWIPDIR)/core/mem.c $(LWIPDIR)/core/memp.c $(LWIPDIR)/core/netif.c \
 	$(LWIPDIR)/core/stats.c $(LWIPDIR)/core/sys.c \
 	$(LWIPDIR)/core/tcp.c $(LWIPDIR)/core/tcp_in.c $(LWIPDIR)/core/raw.c \
 	$(LWIPDIR)/core/tcp_out.c $(LWIPDIR)/core/udp.c $(LWIPDIR)/core/init.c \
-	$(LWIPDIR)/core/def.c $(LWIPDIR)/core/timers.c $(LWIPDIR)/core/dhcp.c
-CORE4FILES=$(LWIPDIR)/core/ipv4/icmp.c $(LWIPDIR)/core/ipv4/ip.c \
-	$(LWIPDIR)/core/ipv4/inet.c $(LWIPDIR)/core/ipv4/ip_addr.c \
+	$(LWIPDIR)/core/def.c $(LWIPDIR)/core/timers.c $(LWIPDIR)/core/dhcp.c \
+	$(LWIPDIR)/core/inet_chksum.c
+CORE4FILES=$(LWIPDIR)/core/ipv4/icmp.c $(LWIPDIR)/core/ipv4/ip4.c \
+	$(LWIPDIR)/core/ipv4/inet.c $(LWIPDIR)/core/ipv4/ip4_addr.c \
 	$(LWIPDIR)/core/ipv4/inet_chksum.c $(LWIPDIR)/core/ipv4/ip_frag.c \
 	$(LWIPDIR)/core/ipv4/autoip.c
 
