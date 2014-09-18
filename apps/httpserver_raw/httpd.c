@@ -2177,7 +2177,7 @@ http_init_file(struct http_state *hs, struct fs_file *file, int is_09, const cha
     hs->time_started = sys_now();
 #endif /* LWIP_HTTPD_TIMING */
 #if !LWIP_HTTPD_DYNAMIC_HEADERS
-    LWIP_ASSERT("HTTP headers not included in file system", hs->handle->http_header_included);
+// todo put this back in, see SpinDance ALII-2711:   LWIP_ASSERT("HTTP headers not included in file system", hs->handle->http_header_included);
 #endif /* !LWIP_HTTPD_DYNAMIC_HEADERS */
 #if LWIP_HTTPD_SUPPORT_V09
     if (hs->handle->http_header_included && is_09) {

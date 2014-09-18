@@ -34,6 +34,8 @@
 
 #include "cpu.h"
 
+#include "incidentLog/log.h"
+
 typedef unsigned   char    u8_t;
 typedef signed     char    s8_t;
 typedef unsigned   short   u16_t;
@@ -88,6 +90,10 @@ typedef int sys_prot_t;
 
 #endif
 
-#define LWIP_PLATFORM_ASSERT(x) //do { if(!(x)) while(1); } while(0)
+#if 0
+    #define LWIP_PLATFORM_ASSERT(x)
+#else
+    #define LWIP_PLATFORM_ASSERT(x) logFatal(x)
+#endif
 
 #endif /* __CC_H__ */

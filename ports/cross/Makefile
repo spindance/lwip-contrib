@@ -147,10 +147,13 @@ CFLAGS-$(CONFIG_TOOLCHAIN_VERBOSE)    += --verbose
 CFLAGS-$(CONFIG_TOOLCHAIN_DEBUG)      += -g
 CFLAGS-y                              += -DPART_$(PART)
 CFLAGS-y                              += -DIPv4
+CFLAGS-$(CONFIG_NDEBUG_ENA)           += -D"NDEBUG"
 CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include
 CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/include/generated
+CFLAGS-$(CONFIG_APP)                  += -I../../../$(APP_DIR)/source
 CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/include
 CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/include/generated
+CFLAGS-$(CONFIG_QUICKSTART)           += -I../../../$(QUICKSTART_DIR)/source
 CFLAGS-y                              += -I../../../lwip/src/include
 CFLAGS-y                              += -I./src/include
 CFLAGS-y                              += -I../../../lwip/src/include/ipv4
@@ -187,7 +190,7 @@ ADDITIONAL_FILES=$(LWIPDIR)/api/netifapi.c $(LWIPDIR)/core/dns.c $(LWIPDIR)/core
                  $(LWIPDIR)/ipv4/igmp.c
 
 # ARCHFILES: Architecture specific files.
-ARCHFILES=$(wildcard $(LWIPARCH)/*.c $(LWIPARCH)/netif/tapif.c $(LWIPARCH)/netif/tunif.c $(LWIPARCH)/netif/unixif.c $(LWIPARCH)/netif/list.c $(LWIPARCH)/netif/tcpdump.c)
+ARCHFILES=$(wildcard $(LWIPARCH)/netif/tapif.c $(LWIPARCH)/netif/tunif.c $(LWIPARCH)/netif/unixif.c $(LWIPARCH)/netif/list.c $(LWIPARCH)/netif/tcpdump.c)
 
 # LWIPFILES: All the above.
 LWIPFILES=$(COREFILES) $(CORE4FILES) $(APIFILES) $(NETIFFILES) $(ARCHFILES) $(ADDITIONAL_FILES)
